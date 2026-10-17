@@ -5,6 +5,16 @@ ventes = [
     {"client": "Entreprise D", "montant": 450, "paye": False}
 ]
 
+ventes_test = [
+    {"client": "Entreprise A", "montant": 1200, "paye": True},
+    {"client": "", "montant": 850, "paye": False},
+    {"client": "Entreprise C", "montant": -200, "paye": True},
+    {"client": "Entreprise D", "montant": "inconnu", "paye": False},
+    {"client": "Entreprise E", "paye": True},
+    {"client": "   ", "montant": 500, "paye": "oui"},
+    {"client": "Entreprise G", "montant": True, "paye": False}
+]
+
 # 0. Prise en compte des erreurs potentielles dans les données de ventes (exemple : montant négatif, client manquant, etc.)
 def verifier_donnees(ventes):
     erreurs = []
@@ -23,7 +33,10 @@ def verifier_donnees(ventes):
         if "montant" not in vente:
             erreurs.append(f"Vente {numero} : montant manquant")
 
-        elif not isinstance(vente["montant"], (int, float)):
+        elif (
+            isinstance(vente["montant"], bool) or
+            not isinstance(vente["montant"], (int, float))
+        ):
             erreurs.append(f"Vente {numero} : montant non numérique")
 
         elif vente["montant"] < 0:
@@ -35,7 +48,6 @@ def verifier_donnees(ventes):
         elif not isinstance(vente["paye"], bool):
             erreurs.append(f"Vente {numero} : statut de paiement non valide")
     return erreurs
-
 
 
 # 1. Calculer le montant total des ventes
@@ -80,6 +92,12 @@ def rapport_ventes(ventes):
     Returns:
         Dictionnaire contenant le rapport des ventes.
     """
+    
+    erreurs = verifier_donnees(ventes)
+    if erreurs:
+        raise ValueError("\n".join(erreurs))
+    
+    
     ca_total = calculer_ca(ventes)
     montant_encaisse = sum(vente["montant"] for vente in ventes if vente["paye"])
     montant_restant = ca_total - montant_encaisse
