@@ -5,6 +5,28 @@ ventes = [
     {"client": "Entreprise D", "montant": 450, "paye": False}
 ]
 
+# 0. Prise en compte des erreurs potentielles dans les données de ventes (exemple : montant négatif, client manquant, etc.)
+def verifier_donnees(ventes):
+    """
+    Vérifie les données de ventes pour détecter les erreurs potentielles.
+
+    Args:
+        ventes: Liste de dictionnaires représentant les ventes.
+
+    Returns:
+        Liste des erreurs détectées.
+    """
+    erreurs = []
+    for vente in ventes:
+        if "client" not in vente or not vente["client"]:
+            erreurs.append(f"Erreur : Client manquant dans la vente {vente}")
+        if "montant" not in vente or vente["montant"] < 0:
+            erreurs.append(f"Erreur : Montant négatif ou manquant dans la vente {vente}")
+        if "paye" not in vente:
+            erreurs.append(f"Erreur : Statut de paiement manquant dans la vente {vente}")
+    return erreurs
+
+
 
 # 1. Calculer le montant total des ventes
 def calculer_ca(ventes):
