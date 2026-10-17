@@ -18,3 +18,10 @@ print("Nombre de factures supérieures à 300 € :", count)
 #    supérieures à 500 €
 reduced_factures = [f * 0.9 if f > 500 else f for f in factures]
 print("Factures réduites :", reduced_factures)
+
+# 6. Créer une fonction qui permet de modifier le seuil et le pourcentage de réduction sans modifier le code principal
+def appliquer_reduction(factures,seuil,taux):
+    return[f * (1- taux/100) if f > seuil else f for f in factures]
+
+nouvelle_reduction = appliquer_reduction(factures,300,15)
+print("Factures après nouvelle réduction :", nouvelle_reduction)
