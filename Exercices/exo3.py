@@ -76,7 +76,7 @@ def convertir_montants(ventes):
     for numero, vente in enumerate(ventes, start=1):
         nouvelle_vente = vente.copy()
         try:
-            montant = float(vente["montant"])
+            montant = float(vente.get("montant"))
 
         except (ValueError, TypeError):
             raise ValueError(

@@ -1,0 +1,7 @@
+Rapport des ventes
+==================
+Nombre total de ventes : 4
+Montant total des ventes : 4600.00
+Montant moyen des ventes : 1150.00
+Montant maximum des ventes : 2100.00
+Client avec la vente la plus élevée : Entreprise C
