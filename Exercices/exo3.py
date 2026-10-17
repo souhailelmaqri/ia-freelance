@@ -1,6 +1,6 @@
 import csv
 
-from Exercices.exo2 import verifier_donnees
+
 
 chemin_fichier_import = "C:\\Users\\souhe\\Desktop\\Projet_Freelance\\Git_projects\\git_practice_2\\ia-freelance\\Donnees\\ventes.csv"
 
@@ -29,22 +29,36 @@ for vente in ventes:
     print(vente)
 
 # Vérifier les ventes, collecter les erreurs et si une ligne contient une erreur : arreter le programme et afficher les erreurs
-def verifier_ventes(ventes):
-    """
-    Vérifie les ventes et collecte les erreurs.
+def verifier_donnees(ventes):
+    erreurs = []
 
-    Args:
-        ventes: Liste de dictionnaires représentant les ventes.
+    for numero, vente in enumerate(ventes, start=1):
 
-    Returns:
-        Liste des erreurs trouvées dans les ventes.
-    """
-    erreurs = verifier_donnees(ventes)
-    if erreurs:
-        print("Erreurs trouvées dans les ventes:")
-        for erreur in erreurs:
-            print(f" - {erreur}")
-        exit(1)
+        # Vérifier le client
+        if "client" not in vente:
+            erreurs.append(f"Vente {numero} : client manquant")
+        elif not isinstance(vente["client"], str):
+            erreurs.append(f"Vente {numero} : client non valide")
+        elif not vente["client"].strip():
+            erreurs.append(f"Vente {numero} : client vide")
+
+        # Vérifier le montant
+        if "montant" not in vente:
+            erreurs.append(f"Vente {numero} : montant manquant")
+
+        elif (
+            not isinstance(vente["montant"], (str, int, float))
+        ):
+            erreurs.append(f"Vente {numero} : montant non numérique")
+
+        elif vente["montant"] < 0:
+            erreurs.append(f"Vente {numero} : montant négatif")
+
+        # Vérifier le statut de paiement
+        if "date" not in vente:
+            erreurs.append(f"Vente {numero} : date manquante")
+        elif not isinstance(vente["date"], str):
+            erreurs.append(f"Vente {numero} : date non valide")
     return erreurs
 
 
