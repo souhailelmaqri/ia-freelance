@@ -42,19 +42,7 @@ def verifier_donnees(ventes):
         elif not vente["client"].strip():
             erreurs.append(f"Vente {numero} : client vide")
 
-        # Vérifier le montant
-        if "montant" not in vente:
-            erreurs.append(f"Vente {numero} : montant manquant")
-
-        elif (
-            not isinstance(vente["montant"], (str, int, float))
-        ):
-            erreurs.append(f"Vente {numero} : montant non numérique")
-
-        elif vente["montant"] < 0:
-            erreurs.append(f"Vente {numero} : montant négatif")
-
-        # Vérifier le statut de paiement
+        # Vérifier la date du paiement
         if "date" not in vente:
             erreurs.append(f"Vente {numero} : date manquante")
         elif not isinstance(vente["date"], str):
@@ -62,24 +50,26 @@ def verifier_donnees(ventes):
     return erreurs
 
 
-# Convertir les valeurs de montant en types appropriés
+# Convertir les valeurs de montant en types appropriés lorsque c'est possible (str -> float), sinon affiche une erreur et ne traite pas la ligne
+# Utiliser la fonction raise pour l'exception et la fonction enumerate pour afficher le numéro de la ligne
 def convertir_montants(ventes):
     """
-    Convertit les valeurs de montant en types appropriés (float).
+    Convertit les valeurs de montant en types appropriés (str -> float) lorsque c'est possible.
 
     Args:
         ventes: Liste de dictionnaires représentant les ventes.
 
     Returns:
-        Liste de dictionnaires avec les montants convertis.
+        Nouvelle liste de dictionnaires avec les montants convertis.
     """
-    for vente in ventes:
+    nouvelles_ventes = []
+    for numero, vente in enumerate(ventes, start=1):
         try:
             vente["montant"] = float(vente["montant"])
+            nouvelles_ventes.append(vente)
         except ValueError:
-            print("Impossible de convertir le montant.")  # Message d'erreur si la conversion échoue
-    return ventes
-
+            print(f"Erreur : Montant non convertible en float pour la vente {numero}. Ligne ignorée.")
+    return nouvelles_ventes
 
 # Calculer les statistiques de ventes
 def calculer_statistiques(ventes):
@@ -92,39 +82,36 @@ def calculer_statistiques(ventes):
     Returns:
         Dictionnaire contenant les statistiques de ventes.
     """
+    total_montant = sum(vente["montant"] for vente in ventes)
     statistiques = {
         "total_ventes": len(ventes),
-        "total_montant": sum(vente["montant"] for vente in ventes),
-        "moyenne_montant": sum(vente["montant"] for vente in ventes) / len(ventes) if ventes else 0,
+        "total_montant": total_montant,
+        "moyenne_montant": total_montant / len(ventes) if ventes else 0,
         "max_montant": max(vente["montant"] for vente in ventes) if ventes else 0,
         "client_max_montant": max(ventes, key=lambda x: x["montant"])["client"] if ventes else None,
     }
     return statistiques
 
-# Générer un fichier contenant le rapport des ventes
+# Générer un fichier TXT contenant le rapport des ventes
 
 chemin_fichier_rapport = "C:\\Users\\souhe\\Desktop\\Projet_Freelance\\Git_projects\\git_practice_2\\ia-freelance\\Rapports\\rapport.txt"
 
-def generer_rapport_ventes(ventes, statistiques, chemin_fichier):
+def generer_rapport(ventes, chemin_fichier):
     """
-    Génère un fichier contenant le rapport des ventes.
+    Génère un fichier TXT contenant le rapport des ventes.
 
     Args:
         ventes: Liste de dictionnaires représentant les ventes.
-        statistiques: Dictionnaire contenant les statistiques de ventes.
-        chemin_fichier: Chemin vers le fichier de rapport.
+        chemin_fichier: Chemin vers le fichier TXT à générer.
     """
-    with open(chemin_fichier, "w", encoding="utf-8", newline="") as fichier:
-        writer = csv.writer(fichier)
-        writer.writerow(["Total ventes", "Total montant", "Moyenne montant", "Max montant", "Client max montant"])
-        writer.writerow([
-            statistiques["total_ventes"],
-            statistiques["total_montant"],
-            statistiques["moyenne_montant"],
-            statistiques["max_montant"],
-            statistiques["client_max_montant"]
-        ])
-
-
+    statistiques = calculer_statistiques(ventes)
+    with open(chemin_fichier, "w", encoding="utf-8") as fichier:
+        fichier.write("Rapport des ventes\n")
+        fichier.write("==================\n")
+        fichier.write(f"Nombre total de ventes : {statistiques['total_ventes']}\n")
+        fichier.write(f"Montant total des ventes : {statistiques['total_montant']:.2f}\n")
+        fichier.write(f"Montant moyen des ventes : {statistiques['moyenne_montant']:.2f}\n")
+        fichier.write(f"Montant maximum des ventes : {statistiques['max_montant']:.2f}\n")
+        fichier.write(f"Client avec la vente la plus élevée : {statistiques['client_max_montant']}\n")
 
 
