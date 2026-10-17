@@ -1,5 +1,7 @@
 import csv
 
+from Exercices.exo2 import verifier_donnees
+
 chemin_fichier_import = "C:\\Users\\souhe\\Desktop\\Projet_Freelance\\Git_projects\\git_practice_2\\ia-freelance\\Donnees\\ventes.csv"
 
 # Lecture du fichier CSV Donnees/ventes.csv avec DictReader
@@ -25,6 +27,25 @@ def lire_ventes(chemin_fichier):
 ventes = lire_ventes(chemin_fichier_import)
 for vente in ventes:
     print(vente)
+
+# Vérifier les ventes, collecter les erreurs et si une ligne contient une erreur : arreter le programme et afficher les erreurs
+def verifier_ventes(ventes):
+    """
+    Vérifie les ventes et collecte les erreurs.
+
+    Args:
+        ventes: Liste de dictionnaires représentant les ventes.
+
+    Returns:
+        Liste des erreurs trouvées dans les ventes.
+    """
+    erreurs = verifier_donnees(ventes)
+    if erreurs:
+        print("Erreurs trouvées dans les ventes:")
+        for erreur in erreurs:
+            print(f" - {erreur}")
+        exit(1)
+    return erreurs
 
 
 # Convertir les valeurs de montant en types appropriés

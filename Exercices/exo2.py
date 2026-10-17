@@ -63,7 +63,7 @@ def calculer_ca(ventes):
     """
     return sum(vente["montant"] for vente in ventes)
 
-print("Chiffre d'affaires total :", calculer_ca(ventes))
+
 
 # 2. Identifier les factures impayées
 def factures_impayees(ventes):
@@ -79,7 +79,7 @@ def factures_impayees(ventes):
     return [vente for vente in ventes if not vente["paye"]]
 
 
-print("Factures impayées :", factures_impayees(ventes))
+
 
 # 3. Affiche un rapport contenant : le chiffre d'affaires total, le montant encaissé, le montant restant à encaisser, le nombre de factures impayées et le nom client ayant la facture la plus élevée
 def rapport_ventes(ventes):
@@ -114,4 +114,14 @@ def rapport_ventes(ventes):
         "client_facture_plus_elevee": client_facture_plus_elevee
     }
 
-print("Rapport des ventes :", rapport_ventes(ventes))
+
+if __name__ == "__main__":
+    # Calculer et afficher le chiffre d'affaires total, les factures impayées et le rapport des ventes
+    print("Chiffre d'affaires total :", calculer_ca(ventes))
+    print("Factures impayées :", factures_impayees(ventes))
+    print("Rapport des ventes :", rapport_ventes(ventes))
+
+    for erreur in verifier_donnees(ventes_test):
+       print(erreur)
+
+
