@@ -7,23 +7,33 @@ ventes = [
 
 # 0. Prise en compte des erreurs potentielles dans les données de ventes (exemple : montant négatif, client manquant, etc.)
 def verifier_donnees(ventes):
-    """
-    Vérifie les données de ventes pour détecter les erreurs potentielles.
-
-    Args:
-        ventes: Liste de dictionnaires représentant les ventes.
-
-    Returns:
-        Liste des erreurs détectées.
-    """
     erreurs = []
-    for vente in ventes:
-        if "client" not in vente or not vente["client"]:
-            erreurs.append(f"Erreur : Client manquant dans la vente {vente}")
-        if "montant" not in vente or vente["montant"] < 0:
-            erreurs.append(f"Erreur : Montant négatif ou manquant dans la vente {vente}")
+
+    for numero, vente in enumerate(ventes, start=1):
+
+        # Vérifier le client
+        if "client" not in vente:
+            erreurs.append(f"Vente {numero} : client manquant")
+        elif not isinstance(vente["client"], str):
+            erreurs.append(f"Vente {numero} : client non valide")
+        elif not vente["client"].strip():
+            erreurs.append(f"Vente {numero} : client vide")
+
+        # Vérifier le montant
+        if "montant" not in vente:
+            erreurs.append(f"Vente {numero} : montant manquant")
+
+        elif not isinstance(vente["montant"], (int, float)):
+            erreurs.append(f"Vente {numero} : montant non numérique")
+
+        elif vente["montant"] < 0:
+            erreurs.append(f"Vente {numero} : montant négatif")
+
+        # Vérifier le statut de paiement
         if "paye" not in vente:
-            erreurs.append(f"Erreur : Statut de paiement manquant dans la vente {vente}")
+            erreurs.append(f"Vente {numero} : statut de paiement manquant")
+        elif not isinstance(vente["paye"], bool):
+            erreurs.append(f"Vente {numero} : statut de paiement non valide")
     return erreurs
 
 
