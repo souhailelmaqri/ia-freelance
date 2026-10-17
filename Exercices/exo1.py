@@ -37,6 +37,6 @@ print("Statistiques des factures :", calculer_statistiques(factures))
 
 # 8. Créer une fonction qui compte le nombre de factures supérieures à un certain seuil
 def compter_factures(factures, seuil):
-    return len([f for f in factures if f > seuil])
+    return sum(1 for f in factures if f > seuil)
 
 print("Nombre de factures supérieures à 300 € :", compter_factures(factures, 300))
