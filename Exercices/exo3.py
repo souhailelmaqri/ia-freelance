@@ -1,6 +1,6 @@
 import csv
 
-chemin_fichier = "C:\\Users\\souhe\\Desktop\\Projet_Freelance\\Git_projects\\git_practice_2\\ia-freelance\\Donnees\\ventes.csv"
+chemin_fichier_import = "C:\\Users\\souhe\\Desktop\\Projet_Freelance\\Git_projects\\git_practice_2\\ia-freelance\\Donnees\\ventes.csv"
 
 # Lecture du fichier CSV Donnees/ventes.csv avec DictReader
 
@@ -22,7 +22,7 @@ def lire_ventes(chemin_fichier):
     return ventes
 
 
-ventes = lire_ventes(chemin_fichier)
+ventes = lire_ventes(chemin_fichier_import)
 for vente in ventes:
     print(vente)
 
@@ -65,5 +65,31 @@ def calculer_statistiques(ventes):
         "client_max_montant": max(ventes, key=lambda x: x["montant"])["client"] if ventes else None,
     }
     return statistiques
+
+# Générer un fichier contenant le rapport des ventes
+
+chemin_fichier_rapport = "C:\\Users\\souhe\\Desktop\\Projet_Freelance\\Git_projects\\git_practice_2\\ia-freelance\\Rapports\\rapport.txt"
+
+def generer_rapport_ventes(ventes, statistiques, chemin_fichier):
+    """
+    Génère un fichier contenant le rapport des ventes.
+
+    Args:
+        ventes: Liste de dictionnaires représentant les ventes.
+        statistiques: Dictionnaire contenant les statistiques de ventes.
+        chemin_fichier: Chemin vers le fichier de rapport.
+    """
+    with open(chemin_fichier, "w", encoding="utf-8", newline="") as fichier:
+        writer = csv.writer(fichier)
+        writer.writerow(["Total ventes", "Total montant", "Moyenne montant", "Max montant", "Client max montant"])
+        writer.writerow([
+            statistiques["total_ventes"],
+            statistiques["total_montant"],
+            statistiques["moyenne_montant"],
+            statistiques["max_montant"],
+            statistiques["client_max_montant"]
+        ])
+
+
 
 
