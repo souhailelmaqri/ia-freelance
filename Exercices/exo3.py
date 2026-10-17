@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 
 
 
@@ -24,9 +25,7 @@ def lire_ventes(chemin_fichier):
     return ventes
 
 
-ventes = lire_ventes(chemin_fichier_import)
-for vente in ventes:
-    print(vente)
+
 
 # Vérifier les ventes, collecter les erreurs et si une ligne contient une erreur : arreter le programme et afficher les erreurs
 def verifier_donnees(ventes):
@@ -45,13 +44,15 @@ def verifier_donnees(ventes):
         # Vérifier la date du paiement
         if "date" not in vente:
             erreurs.append(f"Vente {numero} : date manquante")
-        elif not isinstance(vente["date"], str):
+        elif not isinstance(vente["date"], str) and not isinstance(vente["date"], datetime.datetime):
             erreurs.append(f"Vente {numero} : date non valide")
+        elif not vente["date"].strip():
+            erreurs.append(f"Vente {numero} : date vide")
     return erreurs
 
 
 # Convertir les valeurs de montant en types appropriés lorsque c'est possible (str -> float), sinon affiche une erreur et ne traite pas la ligne
-# Utiliser la fonction raise pour l'exception et la fonction enumerate pour afficher le numéro de la ligne
+
 def convertir_montants(ventes):
     """
     Convertit les valeurs de montant en types appropriés (str -> float) lorsque c'est possible.
@@ -64,11 +65,12 @@ def convertir_montants(ventes):
     """
     nouvelles_ventes = []
     for numero, vente in enumerate(ventes, start=1):
+        nouvelle_vente = vente.copy()
         try:
-            vente["montant"] = float(vente["montant"])
-            nouvelles_ventes.append(vente)
-        except ValueError:
-            print(f"Erreur : Montant non convertible en float pour la vente {numero}. Ligne ignorée.")
+            nouvelle_vente["montant"] = float(vente["montant"])
+            nouvelles_ventes.append(nouvelle_vente)
+        except (ValueError, TypeError):
+            raise ValueError(f"Vente {numero} : montant absent ou non numérique.")
     return nouvelles_ventes
 
 # Calculer les statistiques de ventes
@@ -115,3 +117,19 @@ def generer_rapport(ventes, chemin_fichier):
         fichier.write(f"Client avec la vente la plus élevée : {statistiques['client_max_montant']}\n")
 
 
+def main():
+    ventes = lire_ventes(chemin_fichier_import)
+
+    erreurs = verifier_donnees(ventes)
+    if erreurs:
+        raise ValueError("\n".join(erreurs))
+
+    ventes = convertir_montants(ventes)
+
+    generer_rapport(ventes, chemin_fichier_rapport)
+
+    print("Rapport généré avec succès !")
+
+
+if __name__ == "__main__":
+    main()
