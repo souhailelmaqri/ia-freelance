@@ -21,13 +21,36 @@ print("Factures réduites :", reduced_factures)
 
 # 6. Créer une fonction qui permet de modifier le seuil et le pourcentage de réduction sans modifier le code principal
 def appliquer_reduction(factures,seuil,taux):
-    return[f * (1- taux/100) if f > seuil else f for f in factures]
+    """
+    Applique une réduction aux factures supérieures au seuil.
+
+    Args:
+       factures: Liste des montants des factures.
+       seuil: Montant à partir duquel la réduction s'applique.
+       taux: Pourcentage de réduction (exemple : 15 pour 15 %).
+
+    Returns:
+       Nouvelle liste contenant les montants après réduction.
+    """
+    return[
+        f * (1- taux/100) if f > seuil else 
+        f for f in factures
+        ]
 
 nouvelle_reduction = appliquer_reduction(factures,300,15)
 print("Factures après nouvelle réduction :", nouvelle_reduction)
 
 # 7. Créer une fonction qui calcule les statistiques (total, moyenne, facture la plus élevée) pour une liste de factures donnée
 def calculer_statistiques(factures):
+    """
+    Calcule les statistiques (total, moyenne, facture la plus élevée) pour une liste de factures donnée.
+
+    Args:
+        factures: Liste des montants des factures.
+
+    Returns:
+        Tuple contenant le total, la moyenne et la facture la plus élevée.
+    """
     total = sum(factures)
     moyenne = total / len(factures) if factures else 0
     max_facture = max(factures) if factures else 0
@@ -35,8 +58,19 @@ def calculer_statistiques(factures):
 
 print("Statistiques des factures :", calculer_statistiques(factures))
 
+
 # 8. Créer une fonction qui compte le nombre de factures supérieures à un certain seuil
 def compter_factures(factures, seuil):
+    """
+    Compte le nombre de factures supérieures à un certain seuil.
+
+    Args:
+        factures: Liste des montants des factures.
+        seuil: Montant du seuil.
+
+    Returns:
+        Nombre de factures supérieures au seuil.
+    """
     return sum(1 for f in factures if f > seuil)
 
 print("Nombre de factures supérieures à 300 € :", compter_factures(factures, 300))
