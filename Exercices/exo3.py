@@ -1,4 +1,5 @@
 import csv
+import math
 from datetime import datetime
 
 
@@ -44,10 +45,18 @@ def verifier_donnees(ventes):
         # Vérifier la date du paiement
         if "date" not in vente:
             erreurs.append(f"Vente {numero} : date manquante")
-        elif not isinstance(vente["date"], str) and not isinstance(vente["date"], datetime.datetime):
+
+        elif not isinstance(vente["date"], str):
             erreurs.append(f"Vente {numero} : date non valide")
+
         elif not vente["date"].strip():
             erreurs.append(f"Vente {numero} : date vide")
+
+        else:
+            try:
+                datetime.strptime(vente["date"], "%Y-%m-%d")
+            except ValueError:
+                erreurs.append(f"Vente {numero} : format de date invalide")
     return erreurs
 
 
@@ -67,10 +76,20 @@ def convertir_montants(ventes):
     for numero, vente in enumerate(ventes, start=1):
         nouvelle_vente = vente.copy()
         try:
-            nouvelle_vente["montant"] = float(vente["montant"])
-            nouvelles_ventes.append(nouvelle_vente)
+            montant = float(vente["montant"])
+
         except (ValueError, TypeError):
-            raise ValueError(f"Vente {numero} : montant absent ou non numérique.")
+            raise ValueError(
+                f"Vente {numero} : montant absent ou non numérique."
+            )
+        if not math.isfinite(montant):
+            raise ValueError(f"Vente {numero} : montant non fini.")
+
+        if montant < 0:
+            raise ValueError(f"Vente {numero} : montant négatif.")
+
+        nouvelle_vente["montant"] = montant
+        nouvelles_ventes.append(nouvelle_vente)
     return nouvelles_ventes
 
 # Calculer les statistiques de ventes
@@ -118,7 +137,11 @@ def generer_rapport(ventes, chemin_fichier):
 
 
 def main():
-    ventes = lire_ventes(chemin_fichier_import)
+    try:
+        ventes = lire_ventes(chemin_fichier_import)
+    except FileNotFoundError:
+        print("Erreur : fichier CSV introuvable.")
+        return
 
     erreurs = verifier_donnees(ventes)
     if erreurs:
