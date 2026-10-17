@@ -25,3 +25,18 @@ def appliquer_reduction(factures,seuil,taux):
 
 nouvelle_reduction = appliquer_reduction(factures,300,15)
 print("Factures après nouvelle réduction :", nouvelle_reduction)
+
+# 7. Créer une fonction qui calcule les statistiques (total, moyenne, facture la plus élevée) pour une liste de factures donnée
+def calculer_statistiques(factures):
+    total = sum(factures)
+    moyenne = total / len(factures) if factures else 0
+    max_facture = max(factures) if factures else 0
+    return total, moyenne, max_facture
+
+print("Statistiques des factures :", calculer_statistiques(factures))
+
+# 8. Créer une fonction qui compte le nombre de factures supérieures à un certain seuil
+def compter_factures(factures, seuil):
+    return len([f for f in factures if f > seuil])
+
+print("Nombre de factures supérieures à 300 € :", compter_factures(factures, 300))
